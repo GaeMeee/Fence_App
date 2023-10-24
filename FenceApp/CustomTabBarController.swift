@@ -9,35 +9,43 @@ import UIKit
 
 class CustomTabBarController: UITabBarController {
 
+    let controllers: [UIViewController]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureTabBarControllers()
+        
+        
+    }
+    
+    init(controllers: [UIViewController]) {
+        self.controllers = controllers
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func configureTabBarControllers() {
-        let mapViewController = MapViewController()
+
         let mapTabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "map"), tag: 0)
-        mapViewController.tabBarItem = mapTabBarItem
+        controllers[0].tabBarItem = mapTabBarItem
         
-        let lostListViewController = LostListViewController()
         let lostListTabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "menucard"), tag: 1)
-        let lostListNavigationController = UINavigationController(rootViewController: lostListViewController)
-        lostListNavigationController.tabBarItem = lostListTabBarItem
+        controllers[1].tabBarItem = lostListTabBarItem
         
-        let cameraViewController = CameraViewController()
         let cameraTabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "camera"), tag: 2)
-        cameraViewController.tabBarItem = cameraTabBarItem
+        controllers[2].tabBarItem = cameraTabBarItem
         
-        let chatViewController = ChatViewController()
         let chatTabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "message"), tag: 3)
-        chatViewController.tabBarItem = chatTabBarItem
+        controllers[3].tabBarItem = chatTabBarItem
         
-        let myInfoViewController = MyInfoViewController()
         let myInfoTabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "person"), tag: 4)
-        myInfoViewController.tabBarItem = myInfoTabBarItem
+        controllers[4].tabBarItem = myInfoTabBarItem
         
-        self.viewControllers = [mapViewController, lostListNavigationController, cameraViewController, chatViewController, myInfoViewController]
+        self.viewControllers = controllers
           
         self.tabBar.barTintColor = UIColor(red: 93, green: 223, blue: 222, alpha: 1)
         self.tabBar.unselectedItemTintColor = .gray
