@@ -8,87 +8,45 @@
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-    
+
     var window: UIWindow?
-    
-    let firstTabNavigationController = UINavigationController()
-    let secondTabNavigationController = UINavigationController()
-    let thirdTabNavigationController = UINavigationController()
-    let fourthTabNavigationController = UINavigationController()
-    
-    let locationManager = LocationManager()
-    let firebaseFoundService = FirebaseFoundService()
-    let firebaseLostCommentService = FirebaseLostCommentService()
-    
-    lazy var firebaseAuthService = FirebaseAuthService(firebaseUserService: firebaseUserService, firebaseLostService: firebaseLostService, firebaseLostCommentService: firebaseLostCommentService, firebaseFoundService: firebaseFoundService)
-    
-    lazy var firebaseUserService = FirebaseUserService(firebaseLostService: firebaseLostService, firebaseLostCommentService: firebaseLostCommentService)
-    lazy var firebaseLostService = FirebaseLostService(firebaseLostCommentService: firebaseLostCommentService)
-    
-    
+
+
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        
-        Task {
-            do {
-                firebaseUserService.listenToUpdateOn(userIdentifier: "045RhOisSFgjp0AjR2DusTpDsyb2") { result in
-                    switch result {
-                    case .failure(let error):
-                        print(error)
-                    case .success(let userResponseDTO):
-                        print(userResponseDTO.email, "!!!!!!!")
-                       
-                       
-                    }
-                }
-            } catch {
-                print(error, "@@@@@@@@")
-            }
-        }
-        
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = makeTabbarController()
+        window?.rootViewController = CustomTabBarController()
         window?.makeKeyAndVisible()
-        
-        setNavigationControllers()
     }
-    
-    private func setNavigationControllers() {
-        firstTabNavigationController.viewControllers = [makeMapViewVC()]
-        secondTabNavigationController.viewControllers = [makeLostViewVC()]
-        thirdTabNavigationController.viewControllers = [makeChatViewController()]
-        fourthTabNavigationController.viewControllers = [makeMyInfoViewController()]
+
+    func sceneDidDisconnect(_ scene: UIScene) {
+        // Called as the scene is being released by the system.
+        // This occurs shortly after the scene enters the background, or when its session is discarded.
+        // Release any resources associated with this scene that can be re-created the next time the scene connects.
+        // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
     }
-    
-    private func makeTabbarController() -> CustomTabBarController {
-        let TabbarController = CustomTabBarController(controllers: [firstTabNavigationController, secondTabNavigationController, makeCameraViewController(), thirdTabNavigationController, fourthTabNavigationController])
-        
-        return TabbarController
+
+    func sceneDidBecomeActive(_ scene: UIScene) {
+        // Called when the scene has moved from an inactive state to an active state.
+        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
     }
-    
-    private func makeMapViewVC() -> MapViewController {
-        let vc = MapViewController(firebaseLostService: firebaseLostService, firebaseFoundService: firebaseFoundService, locationManager: locationManager)
-        
-        return vc
+
+    func sceneWillResignActive(_ scene: UIScene) {
+        // Called when the scene will move from an active state to an inactive state.
+        // This may occur due to temporary interruptions (ex. an incoming phone call).
     }
-    
-    private func makeLostViewVC() -> LostListViewController {
-        let vc = LostListViewController()
-        return vc
+
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        // Called as the scene transitions from the background to the foreground.
+        // Use this method to undo the changes made on entering the background.
     }
-    
-    private func makeCameraViewController() -> CameraViewController {
-        let vc = CameraViewController()
-        return vc
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        // Called as the scene transitions from the foreground to the background.
+        // Use this method to save data, release shared resources, and store enough scene-specific state information
+        // to restore the scene back to its current state.
     }
-    
-    private func makeChatViewController() -> ChatViewController {
-        let vc = ChatViewController()
-        return vc
-    }
-    
-    private func makeMyInfoViewController() -> MyInfoViewController {
-        let vc = MyInfoViewController()
-        return vc
-    }
+
+
 }
+
