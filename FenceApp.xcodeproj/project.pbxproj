@@ -67,7 +67,7 @@
 		D6D273A02AE224EA00ED3E2F /* EnrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D2739C2AE224E900ED3E2F /* EnrollView.swift */; };
 		D6D273A12AE224EA00ED3E2F /* EnrollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D2739E2AE224E900ED3E2F /* EnrollViewController.swift */; };
 		D6D273A22AE224EA00ED3E2F /* CustomBtnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D2739F2AE224E900ED3E2F /* CustomBtnView.swift */; };
-		D6D806302AE9FF780002AE3A /* CustomFilterModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D8062F2AE9FF780002AE3A /* CustomFilterModalViewController.swift */; };
+		D6D806302AE9FF780002AE3A /*  CustomFilterModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D8062F2AE9FF780002AE3A /*  CustomFilterModalViewController.swift */; };
 		D6D806362AEA52D90002AE3A /* String+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D806352AEA52D90002AE3A /* String+Ext.swift */; };
 		D6D9A7312ADD05EC006A5B8B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6D9A7302ADD05EC006A5B8B /* SceneDelegate.swift */; };
 		D6D9A7382ADD05EF006A5B8B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6D9A7372ADD05EF006A5B8B /* Assets.xcassets */; };
@@ -150,7 +150,7 @@
 		D6D2739C2AE224E900ED3E2F /* EnrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnrollView.swift; sourceTree = "<group>"; };
 		D6D2739E2AE224E900ED3E2F /* EnrollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnrollViewController.swift; sourceTree = "<group>"; };
 		D6D2739F2AE224E900ED3E2F /* CustomBtnView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomBtnView.swift; sourceTree = "<group>"; };
-		D6D8062F2AE9FF780002AE3A /* CustomFilterModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFilterModalViewController.swift; sourceTree = "<group>"; };
+		D6D8062F2AE9FF780002AE3A /*  CustomFilterModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " CustomFilterModalViewController.swift"; sourceTree = "<group>"; };
 		D6D806352AEA52D90002AE3A /* String+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Ext.swift"; sourceTree = "<group>"; };
 		D6D9A72B2ADD05EC006A5B8B /* FenceApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FenceApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6D9A72E2ADD05EC006A5B8B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -472,7 +472,7 @@
 				D6D9A72E2ADD05EC006A5B8B /* AppDelegate.swift */,
 				D6D9A7302ADD05EC006A5B8B /* SceneDelegate.swift */,
 				D651509F2ADD0F9F002FDD04 /* CustomTabBarController.swift */,
-				D6D8062F2AE9FF780002AE3A /* CustomFilterModalViewController.swift */,
+				D6D8062F2AE9FF780002AE3A /*  CustomFilterModalViewController.swift */,
 				D63ADF942AEBC29C0077AD81 /* CustomModalViewController.swift */,
 				D6D806342AEA52B70002AE3A /* Extension */,
 				D6D9A7372ADD05EF006A5B8B /* Assets.xcassets */,
@@ -711,7 +711,7 @@
 				D6E10ED12AE6C4DC0098F05D /* LocationManager.swift in Sources */,
 				C7B109D82AF0E00100B41A09 /* MyInfoCollectionViewCell.swift in Sources */,
 				D6E10EB12AE38F270098F05D /* BatchController.swift in Sources */,
-				D6D806302AE9FF780002AE3A /* CustomFilterModalViewController.swift in Sources */,
+				D6D806302AE9FF780002AE3A /*  CustomFilterModalViewController.swift in Sources */,
 				D6E10E8D2AE1022F0098F05D /* PetError.swift in Sources */,
 				08206A452ADD437A00C110C0 /* Model.swift in Sources */,
 				D6E10EA82AE2AB290098F05D /* MapMainView.swift in Sources */,
