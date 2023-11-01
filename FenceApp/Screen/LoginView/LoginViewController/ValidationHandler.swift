@@ -115,16 +115,31 @@ extension UITextField {
             validationHandler = ValidationHandler(type: type)
         }
         
-        
         self.rx.text
             .bind(to: validationHandler!.textSubject)
             .disposed(by: validationHandler!.disposeBag)
         
         validationHandler!.isValidRelay
-            .map { $0 ? UIColor(hexCode: "68B984") : UIColor(hexCode: "6C5F5B") }
-            .subscribe(onNext: { [weak self] color in
-                self?.layer.borderColor = color.cgColor
+            .subscribe(onNext: { [weak self] isValid in
+                DispatchQueue.main.async {
+                    let borderColor = isValid ? UIColor(hexCode: "68B984") : UIColor(hexCode: "6C5F5B")
+                    self?.withBottomBorder(color: borderColor, width: 3.0)
+                    self?.layoutIfNeeded()
+                }
             })
             .disposed(by: validationHandler!.disposeBag)
+        
+        validationHandler!.textSubject.onNext(self.text)
     }
 }
+
+//extension UIView {
+//    
+//    func removeBottomBorder() {
+//        layer.sublayers?.forEach {
+//            if $0.name == "bottomBorder" {
+//                $0.removeFromSuperlayer()
+//            }
+//        }
+//    }
+//}

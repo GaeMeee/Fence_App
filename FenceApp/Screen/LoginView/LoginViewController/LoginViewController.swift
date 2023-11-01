@@ -19,6 +19,7 @@ import FirebaseAuth
 //MARK: - Properties & Deinit
 final class LoginViewController: UIViewController {
     
+
     let firebaseAuthService: FirebaseAuthService
     let firebaseUserService: FirebaseUserService
     
@@ -33,46 +34,48 @@ final class LoginViewController: UIViewController {
     private var disposeBag = DisposeBag()
     private var emailTextSubject = BehaviorSubject<String?>(value: nil)
 
+    
+    private var shadowContainer = UIView()
+        .withShadow()
+
     private lazy var titleLabel = UILabel()
         .withText("찾아줄개")
-        .withFont(40)
-        .withFontWeight(.bold)
-        .withTextColor(UIColor(hexCode: "524A4E"))
-    
-    private var viewModel = RiveViewModel(fileName: "background")
-    private lazy var riveView = RiveView()
-        .withViewModel(viewModel)
-        .withBlurEffect()
+        .withFont(40, fontName: "Binggrae-Bold")
+        .withTextColor(UIColor(hexCode: "6C5F5B"))
     
     private lazy var emailTextField = UITextField()
-        .withPlaceholder("Email")
-        .withCornerRadius(20)
-        .withInsets(left: 20, right: 20)
-        .withBorder(color: UIColor(hexCode: "6C5F5B"), width: 3.0)
+        .withPlaceholder("Email@gmail.com")
+        .withInsets(left: 5, right: 20)
+        .withBottomBorder(color: UIColor(hexCode: "6C5F5B"), width: 3.0)
     
     private let passwordTextField = UITextField()
-        .withPlaceholder("Password")
+        .withPlaceholder("비밀번호 6글자 이상")
         .withSecured()
-        .withCornerRadius(20)
-        .withInsets(left: 20, right: 20)
-        .withBorder(color: UIColor(hexCode: "6C5F5B"), width: 3.0)
-    
+        .withInsets(left: 5, right: 20)
+        .withBottomBorder(color: UIColor(hexCode: "6C5F5B"), width: 3.0)
+
     private lazy var loginButton = UIButton()
-        .withTitle("Login")
-        .withTextColor(.black)
+        .withTitle("로그인")
+        .withTextColor(UIColor(hexCode: "6C5F5B"))
+        .withFont(size: 20, fontName: "Binggrae-Regular")
         .withTarget(self, action: #selector(loginButtonTapped))
-        .withCornerRadius(20)
+        .withCornerRadius(15)
+        .withBlurEffect()
         .withBorder(color: UIColor(hexCode: "6C5F5B"), width: 3.0)
     
     private lazy var signUpButton = UIButton()
-        .withTitle("Sign Up")
-        .withTextColor(.black)
+        .withTitle("회원 가입")
+        .withTextColor(UIColor(hexCode: "6C5F5B"))
+        .withFont(size: 20, fontName: "Binggrae-Regular")
         .withTarget(self, action: #selector(signUpButtonTapped))
     
     private lazy var findPasswordButton = UIButton()
-        .withTitle("Find Password")
-        .withTextColor(.black)
+        .withTitle("비밀번호 찾기")
+        .withTextColor(UIColor(hexCode: "6C5F5B"))
+        .withFont(size: 20, fontName: "Binggrae-Regular")
         .withTarget(self, action: #selector(findPasswordButtonTapped))
+    
+    
     
     private lazy var buttonStack = UIStackView()
         .withAxis(.horizontal)
@@ -101,12 +104,12 @@ extension LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         signUpView = SignUpView(authService: firebaseAuthService, userService:  firebaseUserService)
+
+        view.handleKeyboardAdjustment(adjustmentFactor: 0.35)
         setupTFValidate()
 
-        view.handleKeyboardAdjustment(adjustmentFactor: 0.25)
         setupUI()
         setUpKeychain()
-        KeychainManager.printAllKeychainItems()
         bindImagePicker()
     }
 }
@@ -115,16 +118,16 @@ extension LoginViewController {
 private extension LoginViewController {
     
     func setupUI() {
-        
+
         view
-            .withBackgroundColor(.white)
+            .withBackgroundColor(UIColor(hexCode: "CBEDC4"))
             .withBackgroundImage(
-                named: "Spline",
-                at: CGPoint(x: 1.0, y: 1.0),
-                size: CGSize(width: 700, height: 1000)
+                named: "background",
+                at: CGPoint(x: view.bounds.midX, y: view.bounds.midY/1.25),
+                size: CGSize(width: view.bounds.width, height: view.bounds.height)
             )
-            .addSubviews(riveView,emailTextField,titleLabel,passwordTextField,loginButton,signUpButton,findPasswordButton,buttonStack)
-        
+            .addSubviews(emailTextField,titleLabel,passwordTextField,loginButton,signUpButton,findPasswordButton,buttonStack)
+
         buttonStack
             .withArrangedSubviews(signUpButton,findPasswordButton)
         
@@ -133,18 +136,15 @@ private extension LoginViewController {
     
     func setupConstraints() {
         
-        riveView
-            .putFullScreen()
+        titleLabel
+            .positionCenterX()
+            .positionMultipleY(multiplier: 0.53)
         
         emailTextField
             .positionCenterX()
-            .positionMultipleY(multiplier: 0.95)
+            .positionMultipleY(multiplier: 1.2)
             .withSize(250, 40)
-        
-        titleLabel
-            .positionCenterX()
-            .putAbove(emailTextField, 50)
-        
+    
         passwordTextField
             .putBelow(emailTextField, 20)
             .positionCenterX()
@@ -156,7 +156,7 @@ private extension LoginViewController {
             .withSize(150, 40)
         
         buttonStack
-            .putBelow(loginButton, 30)
+            .putBelow(loginButton, 20)
             .positionMultipleX(multiplier: 0.5)
     }
 }
@@ -179,16 +179,11 @@ private extension LoginViewController {
                 enterMainView()
             } catch {
                 print("Login error: \(error)")
-                //alert창 넣기
             }
         }
     }
     
     func enterMainView() {
-        
-//        let window = UIApplication.shared.windows.first { $0.isKeyWindow }
-//        let viewTransitionHandler = ViewTransitionHandler(window: window)
-//        viewTransitionHandler.transitionToMainView()
         authPassed()
     }
     
@@ -205,41 +200,46 @@ private extension LoginViewController {
 private extension LoginViewController {
     
     func handleAuthenticationView() {
-        view.addSubviews(authView)
         setupAuthView()
+        view.addSubview(shadowContainer)
+        shadowContainer.addSubview(authView)
+        
         cancelAuthView()
+
         succesPhoneAuth()
+
+
+
     }
-    
+
     func setupAuthView() {
-        authView
-            .positionCenterY()
-            .positionCenterX()
+        shadowContainer
             .withSize(widthRatioOfSuperview: 0.8)
             .withSize(heightOfSuperview: 0.5)
+            .positionCenterY()
+            .positionCenterX()
+
+        authView
             .withCornerRadius(20)
-            .withBlurEffect()
+            .putFullScreen()
+        
     }
-    
+
     func cancelAuthView() {
         authView.deinitAuthView
             .subscribe(onNext: { [weak self, weak authView] in
-                authView?.removeFromSuperview()
+                self?.shadowContainer.removeFromSuperview()
             })
             .disposed(by: disposeBag)
     }
     
     
     func succesPhoneAuth() {
-        
         authView.authenticationSuccessful
             .subscribe(onNext: { [weak self, weak authView] in
-
-                    authView?.removeFromSuperview()
+                self?.shadowContainer.removeFromSuperview()
                 DispatchQueue.main.async {
                     self?.presentSignUpView()
-                    self?.presentSignUpView()
-
                 }
             })
             .disposed(by: disposeBag)
@@ -271,31 +271,23 @@ extension LoginViewController {
     
     func handlesSignupView() {
         presentSignUpView()
-        setUpSignUpView()
     }
     
     
     func presentSignUpView() {
-        setUpSignUpView()
-        view.addSubview(signUpView!)
+        shadowContainer.withSize(widthRatioOfSuperview: 0.8)
+        shadowContainer.withSize(heightOfSuperview: 0.7)
+        
+        view.addSubview(shadowContainer)
+        shadowContainer.addSubview(signUpView!)
         bindSignUpAuthSuccess()
 
-    }
-    
-    func setUpSignUpView() {
-        signUpView!
-            .positionCenterX()
-            .positionCenterY()
-            .withSize(widthRatioOfSuperview: 0.8)
-            .withSize(heightOfSuperview: 0.7)
-            .withCornerRadius(20)
-            .withBlurEffect()
     }
     
     func bindSignUpAuthSuccess() {
         signUpView?.signUpAuthSuccessful
             .subscribe(onNext: { [weak self] in
-                self?.signUpView?.removeFromSuperview()
+                self?.shadowContainer.removeFromSuperview()
             })
             .disposed(by: disposeBag)
     }
@@ -379,6 +371,7 @@ extension LoginViewController {
             emailTextSubject.onNext(email)
             emailTextField.validationHandler?.textSubject.onNext(email)
         }
+        KeychainManager.printAllKeychainItems()
     }
     
 }
@@ -403,11 +396,13 @@ extension LoginViewController {
             return emailIsValid && passwordIsValid
         }
         .subscribe(onNext: { [weak self] isEnabled in
+            print("Received a new isValid value: \(isEnabled)")
+
             DispatchQueue.main.async {
                 if isEnabled {
                     self?.loginButton.layer.borderColor = UIColor(hexCode: "68B984").cgColor
                 } else {
-                    self?.loginButton.layer.borderColor = UIColor(hexCode: "04364A").cgColor
+                    self?.loginButton.layer.borderColor = UIColor(hexCode: "6C5F5B").cgColor
                 }
             }
         })
@@ -480,5 +475,14 @@ extension LoginViewController: PHPickerViewControllerDelegate {
 
 }
 
-
-
+class ShadowContainer: UIView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.withShadow()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        self.withShadow()
+    }
+}

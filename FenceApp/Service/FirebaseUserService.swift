@@ -16,7 +16,7 @@ struct FirebaseUserService {
     
     
     func createUser(userResponseDTO: UserResponseDTO) async throws {
-                
+        
         let dictionary = UserResponseDTOMapper.makeDictionary(from: userResponseDTO)
         
         try await COLLECTION_USERS.document(userResponseDTO.identifier).setData(dictionary)
@@ -32,6 +32,7 @@ struct FirebaseUserService {
         return userDTO
     }
     
+
     
     func editUser(userResponseDTO: UserResponseDTO) async throws {
         

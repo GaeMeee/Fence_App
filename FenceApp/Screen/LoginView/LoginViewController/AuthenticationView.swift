@@ -19,15 +19,13 @@ class AuthenticationView: UIView {
     
     private lazy var phoneNumberTextField = UITextField()
         .withPlaceholder("Phone Number")
-        .withCornerRadius(20)
-        .withBorder(color: UIColor(hexCode: "04364A"), width: 3.0)
-        .withInsets(left: 20, right: 20)
+        .withBottomBorder(color: UIColor(hexCode: "6C5F5B"), width: 3.0)
+        .withInsets(left: 5, right: 50)
     
     private lazy var authNumberTextField = UITextField()
         .withPlaceholder("Auth Number")
-        .withCornerRadius(20)
-        .withBorder(color: UIColor(hexCode: "04364A"), width: 3.0)
-        .withInsets(left: 20, right: 20)
+        .withBottomBorder(color: UIColor(hexCode: "6C5F5B"), width: 3.0)
+        .withInsets(left: 5, right: 20)
         .withSecured()
     
     private lazy var signupButton = UIButton()
@@ -66,6 +64,8 @@ class AuthenticationView: UIView {
 extension AuthenticationView {
     
     func setupUI() {
+        self.backgroundColor = UIColor(hexCode: "CBEDC4")
+        
         addSubviews(phoneNumberTextField,authNumberTextField,signupButton,sendAuthButton,cancelButton)
         phoneNumberTextField.rightView = sendAuthButton
         phoneNumberTextField.rightViewMode = .always

@@ -48,12 +48,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             } catch {
                 print(error)
             }
-            
-            
-           
         }
-        
-       
     }
     
     private func checkUserLoggedIn() {
@@ -62,7 +57,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
         } else {
             setNavigationControllers()
-            window?.rootViewController = makeTabbarController()
+            window?.rootViewController = makeLoginVC()
         }
     }
     
@@ -84,16 +79,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let vc = MapViewController(firebaseLostService: firebaseLostService, firebaseFoundService: firebaseFoundService, locationManager: locationManager)
         
         vc.filterTapped = {
-                    
             let filterViewController = CustomFilterModalViewController()
             filterViewController.delegate = vc
             vc.present(filterViewController, animated: true)
-            
         }
         return vc
     }
     
-    // [weak self]?????
     private func makeLoginVC() -> LoginViewController {
         let vc = LoginViewController(firebaseAuthService: firebaseAuthService, firebaseUserService: firebaseUserService) {
             self.setNavigationControllers()
