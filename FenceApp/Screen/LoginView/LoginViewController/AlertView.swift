@@ -1,21 +1,93 @@
 import UIKit
 
+// MARK: - Success Types
+enum SuccessMessage {
+    case registrationComplete(String)
+    case operationSuccessful(String)
+    case sendMessageSuccessful(String)
+}
+
 // MARK: - Error Types
 enum AppError: Error {
     case networkError(String)
     case authenticationError(String)
     case formatError(String)
+    case loadImageError(String)
     case unknownError
 }
 
-// MARK: - Alert Handler
-struct AlertHandler {
+// MARK: - Alert Handler Singleton
+class AlertHandler {
 
-    typealias AlertAction = (title: String, style: UIAlertAction.Style, handler: ((UIAlertAction) -> Void)?)
+    static let shared = AlertHandler()
 
-    func generateAlert(for error: AppError) -> (UIViewController) -> Void {
+    private init() {}
+
+    func presentSuccessAlert(for successMessage: SuccessMessage) {
+        if let topViewController = currentViewController() {
+            let alert = generateSuccessAlert(for: successMessage)
+            alert(topViewController)
+        }
+    }
+
+    func presentErrorAlert(for error: AppError) {
+        if let topViewController = currentViewController() {
+            let alert = generateErrorAlert(for: error)
+            alert(topViewController)
+        }
+    }
+    
+    
+/* 
+ 링크드리스트 자료구조 이용한 현재 뷰 찾기
+ 
+ UIApplication
+     |
+     |-- UIWindow (keyWindow)
+         |
+         |-- RootViewController (UIViewController)
+             |
+             |-- PresentedViewController (UIViewController)
+                 |
+                 |-- PresentedViewController (UIViewController)
+                ...
+ */
+    
+    private func currentViewController(head: UIViewController? = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.rootViewController) -> UIViewController? {
+        var currentViewController = head
+        while let nextViewController = currentViewController?.presentedViewController {
+            currentViewController = nextViewController
+        }
+        return currentViewController
+    }
+
+    private func generateSuccessAlert(for successMessage: SuccessMessage) -> (UIViewController) -> Void {
+        let (title, message) = detailedSuccessMessage(for: successMessage)
+        return { viewController in
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            viewController.present(alertController, animated: true, completion: nil)
+        }
+    }
+
+    private func detailedSuccessMessage(for success: SuccessMessage) -> (title: String, message: String) {
+        switch success {
+        case .registrationComplete(let customMessage):
+            return ("🥳등록 성공🥳", customMessage)
+        case .operationSuccessful(let customMessage):
+            return ("🥳작업 성공🥳", customMessage)
+        case .sendMessageSuccessful(let customMessage):
+            return("🥳이메일 전송 성공🥳", customMessage)
+        }
+    }
+
+    private func generateErrorAlert(for error: AppError) -> (UIViewController) -> Void {
         let (title, message) = detailedMessage(for: error)
-        return prepareAlert(title: title, message: message)
+        return { viewController in
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            viewController.present(alertController, animated: true, completion: nil)
+        }
     }
 
     private func detailedMessage(for error: AppError) -> (title: String, message: String) {
@@ -25,27 +97,11 @@ struct AlertHandler {
         case .authenticationError(let customMessage):
             return ("🥹인증 에러🥹", customMessage)
         case .formatError(let customMessage):
-            return ("🥹입력 형식 에러🥹", customMessage)
+            return ("🥹입력 에러🥹", customMessage)
+        case .loadImageError(let customMessage):
+            return ("🥹이미지 불러오기 에러🥹", customMessage)
         case .unknownError:
-            return ("🥹Unknown Error🥹", "무언가 잘못되었습니다")
-        }
-    }
-
-    private func prepareAlert(title: String?, message: String?, actions: [AlertAction] = []) -> (UIViewController) -> Void {
-        
-        return { viewController in
-            
-            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            
-            if actions.isEmpty {
-                alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            } else {
-                for action in actions {
-                    alertController.addAction(UIAlertAction(title: action.title, style: action.style, handler: action.handler))
-                }
-            }
-            
-            viewController.present(alertController, animated: true, completion: nil)
+            return ("🥹에러🥹", "무언가 잘못되었습니다")
         }
     }
 }

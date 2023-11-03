@@ -31,18 +31,18 @@ final class SignUpView: UIView {
     private lazy var emailTextField = UITextField()
         .withPlaceholder("Email")
         .withInsets(left: 5, right: 20)
-        .withBottomBorder(width: 3)
+      
 
 
     private lazy var nicknameTextField = UITextField()
         .withPlaceholder("Nick Name")
         .withInsets(left: 5, right: 20)
-        .withBottomBorder(width: 3)
+        
 
     private lazy var passwordTextField = UITextField()
         .withPlaceholder("Password")
         .withInsets(left: 5, right: 20)
-        .withBottomBorder(width: 3)
+        
 
 
     private lazy var signupButton = UIButton()
@@ -67,16 +67,14 @@ final class SignUpView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         emailTextField
-            .updateBottomBorder(color: UIColor(hexCode: "04364A"), width: 3)
+            
             .setupForValidation(type: .email)
 
         nicknameTextField
-            .updateBottomBorder(color: UIColor(hexCode: "04364A"), width: 3)
             .setupForValidation(type: .nickName)
 
-        
+
         passwordTextField
-            .updateBottomBorder(color: UIColor(hexCode: "04364A"), width: 3)
             .setupForValidation(type: .password)
     }
     
@@ -152,21 +150,6 @@ private extension SignUpView {
     }
 }
 
-
-//MARK: - isValid TextField Format
-extension SignUpView {
-    
-    func setupValidate() {
-        emailTextField
-            .setupForValidation(type: .email)
-        
-        passwordTextField
-            .setupForValidation(type: .password)
-        
-        nicknameTextField
-            .setupForValidation(type: .nickName)
-    }
-}
 
 
 //MARK: - Action

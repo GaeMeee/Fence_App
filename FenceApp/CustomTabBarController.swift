@@ -91,9 +91,9 @@ extension CustomTabBarController {
         self.viewControllers = controllers
         
     }
-    
+
     private func setBackgroundColor() {
-        self.tabBar.backgroundColor = .white
+        self.tabBar.backgroundColor = UIColor(hexCode: "ECF7EA")
         self.tabBar.isTranslucent = false
         self.tabBar.barTintColor = UIColor(hexCode: "5DDFDE")
         self.tabBar.unselectedItemTintColor = .black

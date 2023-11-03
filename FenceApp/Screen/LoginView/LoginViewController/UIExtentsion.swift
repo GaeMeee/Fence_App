@@ -265,33 +265,6 @@ extension UIView {
 // MARK: - UIButton Extensions
 extension UIButton {
     
-    @discardableResult
-    func withShadowContainer(cornerRadius: CGFloat, shadowColor: UIColor = .black, shadowOffsetWidth: CGFloat = 0, shadowOffsetHeight: CGFloat = 2, shadowOpacity: Float = 0.5) -> Self {
-        guard let superview = self.superview else { return self }
-        
-        layer.cornerRadius = cornerRadius
-        let shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
-        layer.masksToBounds = false
-        layer.shadowColor = shadowColor.cgColor
-        layer.shadowOffset = CGSize(width: shadowOffsetWidth, height: shadowOffsetHeight)
-        layer.shadowOpacity = shadowOpacity
-        layer.shadowPath = shadowPath.cgPath
-        
-        let contentView = UIView()
-        contentView.frame = self.frame
-        contentView.layer.cornerRadius = cornerRadius
-        contentView.layer.masksToBounds = true
-        
-        self.removeFromSuperview()
-        contentView.addSubview(self)
-        self.snp.makeConstraints { $0.edges.equalTo(contentView) }
-        
-        superview.addSubview(contentView)
-        contentView.snp.makeConstraints { $0.edges.equalTo(self) }
-        
-        return self
-    }
-    
     
     @discardableResult
     func withFont(size: CGFloat, fontName: String? = nil) -> Self {
@@ -470,11 +443,14 @@ extension UIStackView {
     
 }
 
-//MARK: - RiveView extension
-extension RiveView {
-    func withViewModel(_ viewModel: RiveViewModel) -> RiveView {
-        isUserInteractionEnabled = false
-        viewModel.setView(self)
+
+//MARK: - UIImageView extension
+
+extension UIImageView {
+    
+    @discardableResult
+    func withImage(_ named: String) -> Self {
+        self.image = UIImage(named: named)
         return self
     }
 }
@@ -502,13 +478,12 @@ extension UIColor {
     }
 }
 
-//MARK: - UIImageView extension
 
-extension UIImageView {
-    
-    @discardableResult
-    func withImage(_ named: String) -> Self {
-        self.image = UIImage(named: named)
+//MARK: - RiveView extension
+extension RiveView {
+    func withViewModel(_ viewModel: RiveViewModel) -> RiveView {
+        isUserInteractionEnabled = false
+        viewModel.setView(self)
         return self
     }
 }

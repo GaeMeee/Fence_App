@@ -55,11 +55,9 @@ class AuthenticationView: UIView {
         super.layoutSubviews()
         
         phoneNumberTextField
-            .updateBottomBorder(color: UIColor(hexCode: "6C5F5B"), width: 3)
             .setupForValidation(type: .phoneNumber)
 
         authNumberTextField
-            .updateBottomBorder(color: UIColor(hexCode: "6C5F5B"), width: 3)
             .setupForValidation(type: .authNumber)
     }
 
@@ -102,7 +100,6 @@ extension AuthenticationView {
             .putAbove(phoneNumberTextField, 40)
             .positionCenterX()
 
-        
         phoneNumberTextField
             .withSize(widthRatioOfSuperview: 0.7)
             .withHeight(40)

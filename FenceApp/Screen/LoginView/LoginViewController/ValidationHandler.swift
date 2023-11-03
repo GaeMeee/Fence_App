@@ -115,24 +115,23 @@ extension UITextField {
     }
     
     func setupForValidation(type: ValidationHandler.ValidationType) -> Self {
-        
-        
         let initialColor = UIColor(hexCode: "6C5F5B")
         self.withBottomBorder(color: initialColor, width: 3.0)
         
-
         if validationHandler == nil {
             validationHandler = ValidationHandler(type: type)
         }
         
-        self.rx.text.orEmpty
-            .debug()
+        // Immediately emit the current text to ensure the initial validation state is set.
+        validationHandler!.textSubject.onNext(self.text)
+        
+        // Subscribe to the text field's text changes.
+        self.rx.text
             .bind(to: validationHandler!.textSubject)
             .disposed(by: validationHandler!.disposeBag)
         
-        
+        // Update the border color based on the validation state.
         validationHandler!.isValidRelay
-            .debug()
             .subscribe(onNext: { [weak self] isValid in
                 DispatchQueue.main.async {
                     let borderColor = isValid ? UIColor(hexCode: "68B984") : UIColor(hexCode: "6C5F5B")
@@ -141,8 +140,7 @@ extension UITextField {
                 }
             })
             .disposed(by: validationHandler!.disposeBag)
-                
-        validationHandler!.textSubject.onNext(self.text)
+        
         return self
     }
 }

@@ -35,12 +35,14 @@ extension UIView {
         }
     }
     
-    func handleKeyboardAdjustment(adjustmentFactor: CGFloat = 0.5) {
+    func handleKeyboardAdjustment(adjustmentFactor: CGFloat = 0.5) -> Self {
         if keyboardHandler == nil {
             keyboardHandler = KeyboardHandler()
         }
         keyboardHandler?.adjustViewForKeyboard(view: self, adjustmentFactor: adjustmentFactor)
         setupTapToDismissKeyboard()
+        
+        return self
     }
 
     func setupTapToDismissKeyboard() {
