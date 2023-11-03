@@ -22,6 +22,16 @@ class AlertHandler {
     static let shared = AlertHandler()
 
     private init() {}
+    
+    private func generateSuccessAlert(for successMessage: SuccessMessage) -> (UIViewController) -> Void {
+        let (title, message) = detailedSuccessMessage(for: successMessage)
+        
+        return { viewController in
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            viewController.present(alertController, animated: true, completion: nil)
+        }
+    }
 
     func presentSuccessAlert(for successMessage: SuccessMessage) {
         if let topViewController = currentViewController() {
@@ -36,11 +46,9 @@ class AlertHandler {
             alert(topViewController)
         }
     }
+  
     
-    
-/* 
- 링크드리스트 자료구조 이용한 현재 뷰 찾기
- 
+/*
  UIApplication
      |
      |-- UIWindow (keyWindow)
@@ -61,14 +69,6 @@ class AlertHandler {
         return currentViewController
     }
 
-    private func generateSuccessAlert(for successMessage: SuccessMessage) -> (UIViewController) -> Void {
-        let (title, message) = detailedSuccessMessage(for: successMessage)
-        return { viewController in
-            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            viewController.present(alertController, animated: true, completion: nil)
-        }
-    }
 
     private func detailedSuccessMessage(for success: SuccessMessage) -> (title: String, message: String) {
         switch success {

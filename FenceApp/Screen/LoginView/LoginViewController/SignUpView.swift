@@ -72,10 +72,11 @@ final class SignUpView: UIView {
 
         nicknameTextField
             .setupForValidation(type: .nickName)
-
-
+        
         passwordTextField
             .setupForValidation(type: .password)
+        
+        validateSignupButton()
     }
     
     init(authService: FirebaseAuthService, userService: FirebaseUserService) {
@@ -96,12 +97,32 @@ final class SignUpView: UIView {
 
 
 
+extension SignUpView {
+    func validateSignupButton() {
+        Observable
+            .combineLatest(
+                emailTextField.validationHandler!.isValidRelay,
+                nicknameTextField.validationHandler!.isValidRelay,
+                passwordTextField.validationHandler!.isValidRelay
+            ) {isEmailValid, isNicknameValid, isPasswordValid in
+                return isEmailValid && isNicknameValid && isPasswordValid
+            }
+            .subscribe(onNext: { [weak self] allValid in
+                DispatchQueue.main.async {
+                    let backgroundColor = allValid ? ColorHandler.shared.buttonActivatedColor : ColorHandler.shared.buttonDeactivateColor
+                    self?.signupButton.backgroundColor = backgroundColor
+                    self?.signupButton.isEnabled = allValid
+                }
+            })
+    }
+}
+
 
 // MARK: - Congfigure UI
 private extension SignUpView {
     
     func configureUI() {
-        self.backgroundColor = UIColor(hexCode: "CBEDC4")
+        self.backgroundColor = .white
 
         addSubviews(emailTextField,profileImageButton,nicknameTextField,passwordTextField,signupButton,cancelButton)
         profileImageButton.addSubview(profileRiveAnimationView)
@@ -163,8 +184,6 @@ private extension SignUpView {
     
     @objc func signupButtonTapped() {
         signupWithFirebase()
-        
-        
     }
     
     @objc func cancelButtonTapped() {
@@ -173,27 +192,6 @@ private extension SignUpView {
 }
 
 
-//MARK: - SignUp
-extension SignUpView {
-    
-    func signupWithFirebase() {
-        guard let email = emailTextField.text,
-              let password = passwordTextField.text,
-              let nickname = nicknameTextField.text,
-              let imageUrlString = pickedImageURL?.absoluteString else { return }
-        Task {
-            do {
-                let authResult = try await authService.signUpUser(email: email, password: password)
-                let userResponseDTO = UserResponseDTO(email: email, profileImageURL: imageUrlString, identifier: authResult.user.uid, nickname: nickname)
-                try await userService.createUser(userResponseDTO: userResponseDTO)
-                print("Successfully \(#function)")
-                self.signUpAuthSuccessful.onNext(())
-            } catch {
-                print("Error occurred: \(error)")
-            }
-        }
-    }
-}
 
 
 //MARK: - Fetch Image URL From LoginVC
@@ -208,3 +206,32 @@ extension SignUpView {
 }
 
 
+
+
+//MARK: - SignUp
+extension SignUpView {
+    
+    func signupWithFirebase() {
+        guard let email = emailTextField.text,
+              let password = passwordTextField.text,
+              let nickname = nicknameTextField.text,
+              let imageUrlString = pickedImageURL?.absoluteString else { return }
+        
+        Task {
+            do {
+                let authResult = try await authService.signUpUser(email: email, password: password)
+                let userResponseDTO = UserResponseDTO(email: email, profileImageURL: imageUrlString, identifier: authResult.user.uid, nickname: nickname)
+                try await userService.createUser(userResponseDTO: UserResponseDTO)
+                
+                let fbUser = FBUser(email: email, profileImageURL: imageUrlString, identifier: authResult.user.uid, nickname: nickname)
+                CurrentUserInfo.shared.currentUser = fbUser
+                
+                print("Successfully \(#function)")
+                self.signUpAuthSuccessful.onNext(())
+            } catch {
+                print("Error occurred: \(error)")
+                AlertHandler.shared.presentErrorAlert(for: .networkError("네트워크 통신에 문제가 생겼습니다"))
+            }
+        }
+    }
+}

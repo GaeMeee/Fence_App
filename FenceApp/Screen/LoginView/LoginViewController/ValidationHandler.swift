@@ -122,15 +122,12 @@ extension UITextField {
             validationHandler = ValidationHandler(type: type)
         }
         
-        // Immediately emit the current text to ensure the initial validation state is set.
         validationHandler!.textSubject.onNext(self.text)
         
-        // Subscribe to the text field's text changes.
         self.rx.text
             .bind(to: validationHandler!.textSubject)
             .disposed(by: validationHandler!.disposeBag)
         
-        // Update the border color based on the validation state.
         validationHandler!.isValidRelay
             .subscribe(onNext: { [weak self] isValid in
                 DispatchQueue.main.async {

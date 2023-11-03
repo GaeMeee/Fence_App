@@ -17,12 +17,12 @@ import FirebaseAuth
 //MARK: - Properties & Deinit
 final class LoginViewController: UIViewController {
     
-
+    
     let firebaseAuthService: FirebaseAuthService
     let firebaseUserService: FirebaseUserService
     
     let authPassed: () -> Void
-
+    
     private let authView = AuthenticationView()
     private var signUpView: SignUpView?
     private let resetPasswordView = ResetPasswordView()
@@ -30,15 +30,15 @@ final class LoginViewController: UIViewController {
     private var disposeBag = DisposeBag()
     private var emailTextSubject = BehaviorSubject<String?>(value: nil)
     let successAuthSubject = PublishSubject<Void>()
-
+    
     
     private var shadowContainer = UIView()
         .withShadow()
-
+    
     private lazy var titleLabel = UILabel()
         .withText("찾아줄개")
         .withFont(40, fontName: "Binggrae-Bold")
-        .withTextColor(UIColor(hexCode: "6C5F5B"))
+        .withTextColor(ColorHandler.shared.titleColor)
     
     private lazy var emailTextField = UITextField()
         .withPlaceholder("Email@gmail.com")
@@ -48,29 +48,27 @@ final class LoginViewController: UIViewController {
         .withPlaceholder("비밀번호 6글자 이상")
         .withSecured()
         .withInsets(left: 5, right: 20)
-
+    
     private lazy var loginButton = UIButton()
         .withTitle("로그인")
-        .withTextColor(UIColor(hexCode: "6C5F5B"))
-        .withFont(size: 20, fontName: "Binggrae-Regular")
+        .withTextColor(ColorHandler.shared.buttonTextColor)
+        .withBackgroundColor(ColorHandler.shared.buttonActivatedColor)
+        .withFont(size: 20)
         .withTarget(self, action: #selector(loginButtonTapped))
         .withCornerRadius(15)
-        .withBlurEffect()
-        .withBorder(color: UIColor(hexCode: "6C5F5B"), width: 3.0)
+    
     
     private lazy var signUpButton = UIButton()
         .withTitle("회원 가입")
-        .withTextColor(UIColor(hexCode: "6C5F5B"))
-        .withFont(size: 20, fontName: "Binggrae-Regular")
+        .withTextColor(ColorHandler.shared.textColor)
+        .withFont(size: 20)
         .withTarget(self, action: #selector(signUpButtonTapped))
     
     private lazy var findPasswordButton = UIButton()
         .withTitle("비밀번호 찾기")
-        .withTextColor(UIColor(hexCode: "6C5F5B"))
-        .withFont(size: 20, fontName: "Binggrae-Regular")
+        .withTextColor(ColorHandler.shared.textColor)
+        .withFont(size: 20)
         .withTarget(self, action: #selector(findPasswordButtonTapped))
-    
-    
     
     private lazy var buttonStack = UIStackView()
         .withAxis(.horizontal)
@@ -112,6 +110,8 @@ extension LoginViewController {
         
         passwordTextField
             .setupForValidation(type: .password)
+        
+        setupLoginButtonValidate()
     }
 }
 
@@ -119,17 +119,17 @@ extension LoginViewController {
 private extension LoginViewController {
     
     func setupUI() {
-
+        
         view
             .handleKeyboardAdjustment(adjustmentFactor: 0.35)
-            .withBackgroundColor(UIColor(hexCode: "CBEDC4"))
+            .withBackgroundColor(.white)
             .withBackgroundImage(
                 named: "background",
                 at: CGPoint(x: view.bounds.midX, y: view.bounds.midY/1.25),
-                size: CGSize(width: view.bounds.width, height: view.bounds.height)
+                size: CGSize(width: view.bounds.width/0.75, height: view.bounds.height/0.3)
             )
             .addSubviews(emailTextField,titleLabel,passwordTextField,loginButton,signUpButton,findPasswordButton,buttonStack)
-
+        
         buttonStack
             .withArrangedSubviews(signUpButton,findPasswordButton)
         
@@ -140,13 +140,13 @@ private extension LoginViewController {
         
         titleLabel
             .positionCenterX()
-            .positionMultipleY(multiplier: 0.53)
+            .positionMultipleY(multiplier: 0.4)
         
         emailTextField
             .positionCenterX()
             .positionMultipleY(multiplier: 1.2)
             .withSize(250, 40)
-    
+        
         passwordTextField
             .putBelow(emailTextField, 20)
             .positionCenterX()
@@ -167,12 +167,12 @@ private extension LoginViewController {
 
 //MARK: - Button Action
 private extension LoginViewController {
-
+    
     @objc func loginButtonTapped() {
         handleTextFormatError()
         handleKeychain()
         
-        guard let email = emailTextField.text, let password = passwordTextField.text 
+        guard let email = emailTextField.text, let password = passwordTextField.text
         else {return}
         
         Task {
@@ -194,7 +194,7 @@ private extension LoginViewController {
             AlertHandler.shared.presentErrorAlert(for: .formatError("패스워드는 6글자 이상입니다"))
         }
     }
-
+    
     
     func enterMainView() {
         authPassed()
@@ -218,8 +218,8 @@ private extension LoginViewController {
         cancelAuthView()
         successPhoneAuth()
     }
-
-
+    
+    
     func setupAuthView() {
         
         view.addSubview(shadowContainer)
@@ -230,12 +230,12 @@ private extension LoginViewController {
             .withSize(heightOfSuperview: 0.7)
             .positionCenterY()
             .positionCenterX()
-
+        
         authView
             .withCornerRadius(20)
             .putFullScreen()
         
-
+        
     }
     
     func cancelAuthView() {
@@ -246,7 +246,7 @@ private extension LoginViewController {
             })
             .disposed(by: disposeBag)
     }
-
+    
     
     func successPhoneAuth() {
         authView.authenticationSuccessful
@@ -276,14 +276,14 @@ extension LoginViewController {
             })
             .disposed(by: disposeBag)
     }
-
+    
     func presentSignUpView() {
         
         guard let signUpView = signUpView else { return }
-
+        
         view.addSubview(shadowContainer)
         shadowContainer.addSubview(signUpView)
-
+        
         shadowContainer
             .positionCenterX()
             .positionCenterY()
@@ -294,7 +294,7 @@ extension LoginViewController {
             .withCornerRadius(20)
             .putFullScreen()
     }
-
+    
     func cancelSignupViewSubject() {
         signUpView?.cancelSignupViewSubject
             .subscribe(onNext: {[weak self] in
@@ -302,7 +302,7 @@ extension LoginViewController {
             })
             .disposed(by: disposeBag)
     }
-
+    
     
     func bindSignUpAuthSuccess() {
         signUpView?.signUpAuthSuccessful
@@ -325,7 +325,7 @@ extension LoginViewController {
         
         view.addSubview(shadowContainer)
         shadowContainer.addSubviews(resetPasswordView)
-
+        
         shadowContainer
             .positionCenterX()
             .positionCenterY()
@@ -335,21 +335,18 @@ extension LoginViewController {
         resetPasswordView
             .withCornerRadius(20)
             .putFullScreen()
-
-
+        
+        
         resetPasswordView.resetEmailSent
             .subscribe(onNext: { [weak self, weak resetPasswordView] in
                 AlertHandler.shared.presentSuccessAlert(for: .sendMessageSuccessful("이메일에서 비밀번호를 재설정해주세요"))
                 self?.shadowContainer.removeFromSuperview()
             })
             .disposed(by: disposeBag)
-        
-        
-        
     }
-        
-
-
+    
+    
+    
     func deinitResetPasswordView() {
         resetPasswordView.deinitResetPasswordView
             .subscribe(onNext: { [weak self, weak resetPasswordView] in
@@ -397,7 +394,23 @@ extension LoginViewController {
 //MARK: - isValid TextField Format
 extension LoginViewController {
     
-    func setupLoginButtonValidate() {    }
+    func setupLoginButtonValidate() {
+        Observable
+            .combineLatest(emailTextField.validationHandler!.isValidRelay,
+                           passwordTextField.validationHandler!.isValidRelay) { isEmailValid, isPasswordValid in
+                
+                return isEmailValid && isPasswordValid
+            }
+                           .subscribe(onNext: { [weak self] isValid in
+                               DispatchQueue.main.async {
+                                   self?.loginButton.isEnabled = isValid
+                                   let buttonColor = isValid ? ColorHandler.shared.buttonActivatedColor: ColorHandler.shared.buttonDeactivateColor
+                                   self?.loginButton.backgroundColor = buttonColor
+                                   self?.loginButton.isEnabled = isValid
+                               }
+                           })
+                           .disposed(by: disposeBag)
+    }
 }
 
 
@@ -447,7 +460,7 @@ extension LoginViewController: PHPickerViewControllerDelegate {
             }
         }
     }
-
+    
     
     func saveImageToTempDirectory(_ image: UIImage) -> URL? {
         let tempDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
@@ -464,5 +477,5 @@ extension LoginViewController: PHPickerViewControllerDelegate {
         }
         return nil
     }
-
+    
 }
