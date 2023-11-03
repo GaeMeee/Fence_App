@@ -11,6 +11,7 @@
 		0854D9752AF3B38E006C92A5 /* Binggrae-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0854D9742AF3B38E006C92A5 /* Binggrae-Bold.otf */; };
 		0854D9772AF3B394006C92A5 /* Binggrae-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0854D9762AF3B394006C92A5 /* Binggrae-Regular.otf */; };
 		0854D9792AF4E213006C92A5 /* ColorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0854D9782AF4E213006C92A5 /* ColorHandler.swift */; };
+		0854D9AE2AF531BC006C92A5 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 0854D9AD2AF531BC006C92A5 /* FirebaseAuth */; };
 		08DB05CE2AEE61A100A0C589 /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08DB05CD2AEE61A100A0C589 /* AuthenticationView.swift */; };
 		08DB05D02AEE61B900A0C589 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08DB05CF2AEE61B900A0C589 /* KeychainManager.swift */; };
 		08DB05D22AEE61CC00A0C589 /* ResetPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08DB05D12AEE61CC00A0C589 /* ResetPasswordView.swift */; };
@@ -22,7 +23,6 @@
 		08DB05E42AEE622300A0C589 /* RxKeyboard in Frameworks */ = {isa = PBXBuildFile; productRef = 08DB05E32AEE622300A0C589 /* RxKeyboard */; };
 		08DB05E62AEE62B600A0C589 /* cat.riv in Resources */ = {isa = PBXBuildFile; fileRef = 08DB05E52AEE62B600A0C589 /* cat.riv */; };
 		08DB05E82AEE62BE00A0C589 /* profile.riv in Resources */ = {isa = PBXBuildFile; fileRef = 08DB05E72AEE62BE00A0C589 /* profile.riv */; };
-		08DB05EE2AEE875900A0C589 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 08DB05ED2AEE875900A0C589 /* FirebaseAuth */; };
 		08E47AFF2AE11D3F005EDC8C /* UserInfoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E47AFE2AE11D3F005EDC8C /* UserInfoService.swift */; };
 		08E537BD2AE276EF001F08B2 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E537BC2AE276EF001F08B2 /* SignUpView.swift */; };
 		08F96BF12AEF735500EE276D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 08F96BF02AEF735400EE276D /* GoogleService-Info.plist */; };
@@ -228,7 +228,7 @@
 				D6E10EA42AE2A9E10098F05D /* FirebaseStorage in Frameworks */,
 				08DB05DD2AEE621900A0C589 /* RxCocoa in Frameworks */,
 				D651509E2ADD0F2E002FDD04 /* SnapKit in Frameworks */,
-				08DB05EE2AEE875900A0C589 /* FirebaseAuth in Frameworks */,
+				0854D9AE2AF531BC006C92A5 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -613,7 +613,7 @@
 				08DB05DC2AEE621900A0C589 /* RxCocoa */,
 				08DB05E02AEE621900A0C589 /* RxRelay */,
 				08DB05E32AEE622300A0C589 /* RxKeyboard */,
-				08DB05ED2AEE875900A0C589 /* FirebaseAuth */,
+				0854D9AD2AF531BC006C92A5 /* FirebaseAuth */,
 			);
 			productName = FenceApp;
 			productReference = D6D9A72B2ADD05EC006A5B8B /* FenceApp.app */;
@@ -921,7 +921,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -958,7 +958,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1051,6 +1051,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0854D9AD2AF531BC006C92A5 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D65150A12ADD0FFB002FDD04 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
 		08DB05D82AEE621900A0C589 /* RxBlocking */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 08DB05D72AEE621800A0C589 /* XCRemoteSwiftPackageReference "RxSwift" */;
@@ -1070,11 +1075,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 08DB05E22AEE622300A0C589 /* XCRemoteSwiftPackageReference "RxKeyboard" */;
 			productName = RxKeyboard;
-		};
-		08DB05ED2AEE875900A0C589 /* FirebaseAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D65150A12ADD0FFB002FDD04 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAuth;
 		};
 		D615FA992ADFEEB2002F2C44 /* RiveRuntime */ = {
 			isa = XCSwiftPackageProductDependency;

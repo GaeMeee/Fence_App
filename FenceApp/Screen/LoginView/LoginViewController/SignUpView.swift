@@ -67,15 +67,11 @@ final class SignUpView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         emailTextField
-            
             .setupForValidation(type: .email)
-
         nicknameTextField
             .setupForValidation(type: .nickName)
-        
         passwordTextField
             .setupForValidation(type: .password)
-        
         validateSignupButton()
     }
     
@@ -90,9 +86,6 @@ final class SignUpView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-   
-    
 }
 
 
@@ -181,7 +174,6 @@ private extension SignUpView {
     }
     
     
-    
     @objc func signupButtonTapped() {
         signupWithFirebase()
     }
@@ -190,7 +182,6 @@ private extension SignUpView {
         cancelSignupViewSubject.onNext(())
     }
 }
-
 
 
 
@@ -219,10 +210,10 @@ extension SignUpView {
         
         Task {
             do {
-                let authResult = try await authService.signUpUser(email: email, password: password)
+                let authResult = try await self.authService.signUpUser(email: email, password: password)
                 let userResponseDTO = UserResponseDTO(email: email, profileImageURL: imageUrlString, identifier: authResult.user.uid, nickname: nickname)
-                try await userService.createUser(userResponseDTO: UserResponseDTO)
-                
+                try await userService.createUser(userResponseDTO: userResponseDTO)
+
                 let fbUser = FBUser(email: email, profileImageURL: imageUrlString, identifier: authResult.user.uid, nickname: nickname)
                 CurrentUserInfo.shared.currentUser = fbUser
                 
@@ -235,3 +226,29 @@ extension SignUpView {
         }
     }
 }
+
+
+//MARK: - SignUp
+//extension SignUpView {
+//    
+//    func signupWithFirebase() {
+//        guard let email = emailTextField.text,
+//              let password = passwordTextField.text,
+//              let nickname = nicknameTextField.text,
+//              let imageUrlString = pickedImageURL?.absoluteString else { return }
+//        Task {
+//            do {
+//                let authResult = try await authService.signUpUser(email: email, password: password)
+//                let userResponseDTO = UserResponseDTO(email: email, profileImageURL: imageUrlString, identifier: authResult.user.uid, nickname: nickname)
+//                try await userService.createUser(userResponseDTO: userResponseDTO)
+//                print("Successfully \(#function)")
+//                self.signUpAuthSuccessful.onNext(())
+//            } catch {
+//                print("Error occurred: \(error)")
+//                AlertHandler.shared.presentErrorAlert(for: .networkError("네트워크 통신에 문제가 생겼습니다"))
+//                
+//            }
+//        }
+//    }
+//}
+//

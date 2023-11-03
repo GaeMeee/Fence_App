@@ -172,19 +172,31 @@ private extension LoginViewController {
         handleTextFormatError()
         handleKeychain()
         
-        guard let email = emailTextField.text, let password = passwordTextField.text
-        else {return}
+        guard let email = emailTextField.text, let password = passwordTextField.text else { return }
         
         Task {
             do {
-                try await firebaseAuthService.signInUser(email: email, password: password)
-                print("Successfully \(#function)")
+                let authResult = try await firebaseAuthService.loginUser(email: email, password: password)
+                print("Successfully logged in")
+                await fetchAndStoreCurrentUser(identifier: authResult.user.uid)
                 enterMainView()
             } catch {
                 print("Login error: \(error)")
             }
         }
     }
+
+    func fetchAndStoreCurrentUser(identifier: String) async {
+        do {
+            let user = try await firebaseUserService.fetchUser(userIdentifier: identifier)
+            let fbUser = FBUser(email: user.email, profileImageURL: user.profileImageURL, identifier: user.identifier, nickname: user.nickname)
+            CurrentUserInfo.shared.currentUser = fbUser
+            print("Current User Info\(String(describing: CurrentUserInfo.shared.currentUser))")
+        } catch {
+            print("Failed to fetch user data: \(error)")
+        }
+    }
+
     
     //MARK: TextFormat Error
     func handleTextFormatError() {
@@ -308,6 +320,7 @@ extension LoginViewController {
         signUpView?.signUpAuthSuccessful
             .subscribe(onNext: { [weak self] in
                 self?.shadowContainer.removeFromSuperview()
+                self?.signUpView?.removeFromSuperview()
             })
             .disposed(by: disposeBag)
     }
@@ -336,10 +349,10 @@ extension LoginViewController {
             .withCornerRadius(20)
             .putFullScreen()
         
-        
         resetPasswordView.resetEmailSent
             .subscribe(onNext: { [weak self, weak resetPasswordView] in
                 AlertHandler.shared.presentSuccessAlert(for: .sendMessageSuccessful("이메일에서 비밀번호를 재설정해주세요"))
+                
                 self?.shadowContainer.removeFromSuperview()
             })
             .disposed(by: disposeBag)

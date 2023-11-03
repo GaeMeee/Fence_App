@@ -19,7 +19,7 @@ class AuthenticationView: UIView {
         .withTextColor(ColorHandler.shared.titleColor)
 
     private lazy var sendAuthButton = UIButton(type: .custom)
-        .withSFImage(systemName: "paperplane.circle", pointSize: 30, tintColor: (ColorHandler.shared.titleColor))
+        .withSFImage(systemName: "paperplane.circle", pointSize: 30)
         .withTarget(self, action: #selector(sendAuthButtonTapped))
     
     private lazy var phoneNumberTextField = UITextField()
@@ -91,6 +91,7 @@ extension AuthenticationView {
                 DispatchQueue.main.async {
                     let backgroundColor = allValid ? ColorHandler.shared.buttonActivatedColor : ColorHandler.shared.buttonDeactivateColor
                     self?.signupButton.backgroundColor = backgroundColor
+                    self?.sendAuthButton.tintColor = backgroundColor
                     self?.signupButton.isEnabled = allValid
                 }
             })
