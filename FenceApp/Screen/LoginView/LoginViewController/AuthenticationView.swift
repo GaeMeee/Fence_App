@@ -19,13 +19,16 @@ class AuthenticationView: UIView {
         .withTextColor(ColorHandler.shared.titleColor)
     
     private lazy var sendAuthButton = UIButton(type: .custom)
-        .withSFImage(systemName: "paperplane.circle", pointSize: 30)
+        .withTextColor(.white)
+        .withTitle(" 전송 하기 ")
+        .withCornerRadius(10)
         .withTarget(self, action: #selector(sendAuthButtonTapped))
     
     private lazy var phoneNumberTextField = UITextField()
         .withPlaceholder("전화번호")
         .withInsets(left: 5, right: 50)
         .withBottomBorder(width: 3)
+        
     
     private lazy var authNumberTextField = UITextField()
         .withPlaceholder("인증번호")
@@ -50,13 +53,22 @@ class AuthenticationView: UIView {
         super.didMoveToSuperview()
         phoneNumberTextField.setupForValidation(type: .phoneNumber)
         authNumberTextField.setupForValidation(type: .authNumber)
+        validatePhoneNumberTextField()
         validateSignupButton()
+        setupPhoneNumberTextFieldValidation()
     }
     
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
+        
+        if newSuperview == nil {
+            phoneNumberTextField.text = ""
+            authNumberTextField.text = ""
+        }
+    }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        
         setupUI()
     }
     
@@ -74,6 +86,18 @@ class AuthenticationView: UIView {
 //MARK:  - Validate Signup Button
 extension AuthenticationView {
     
+    func validatePhoneNumberTextField() {
+        phoneNumberTextField.validationHandler?.isValidRelay
+            .subscribe(onNext: {[weak self] isValid in
+                DispatchQueue.main.async {
+                    let color = isValid ? ColorHandler.shared.buttonActivatedColor : ColorHandler.shared.buttonDeactivateColor
+                    self?.sendAuthButton.backgroundColor = color
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    
     func validateSignupButton() {
         Observable
             .combineLatest(
@@ -86,13 +110,11 @@ extension AuthenticationView {
                 DispatchQueue.main.async {
                     let backgroundColor = allValid ? ColorHandler.shared.buttonActivatedColor : ColorHandler.shared.buttonDeactivateColor
                     self?.signupButton.backgroundColor = backgroundColor
-                    self?.sendAuthButton.tintColor = backgroundColor
                     self?.signupButton.isEnabled = allValid
                 }
             })
             .disposed(by: disposeBag)
     }
-    
 }
 
 //MARK: - configure UI
@@ -104,12 +126,13 @@ extension AuthenticationView {
         
         addSubviews(phoneNumberTextField,titleLabel,authNumberTextField,signupButton,sendAuthButton,cancelButton)
         phoneNumberTextField.rightView = sendAuthButton
-        phoneNumberTextField.rightViewMode = .always
         configureConstraints()
         
     }
     
     func configureConstraints() {
+        
+                
         
         titleLabel
             .putAbove(phoneNumberTextField, 40)
@@ -137,6 +160,18 @@ extension AuthenticationView {
             .putBelow(signupButton, 10)
             .positionCenterX()
     }
+    
+    func setupPhoneNumberTextFieldValidation() {
+        phoneNumberTextField.validationHandler?.isValidRelay
+            .subscribe(onNext: { [weak self] isValid in
+                DispatchQueue.main.async {
+                    let color = isValid ? ColorHandler.shared.buttonActivatedColor : ColorHandler.shared.buttonDeactivateColor
+                    self?.sendAuthButton.backgroundColor = color
+                    self?.sendAuthButton.isEnabled = isValid
+                }
+            })
+            .disposed(by: disposeBag)
+    }
 }
 
 
@@ -145,23 +180,8 @@ extension AuthenticationView {
 extension AuthenticationView {
     
     @objc func sendAuthButtonTapped() {
-        var phoneNumber = self.phoneNumberTextField.text ?? ""
-        if !phoneNumber.starts(with: "+82") && phoneNumber.count == 10 || phoneNumber.count == 11 {
-            if phoneNumber.starts(with: "0") {
-                phoneNumber.remove(at: phoneNumber.startIndex)
-            }
-            phoneNumber = "+82" + phoneNumber
-        }
-
-        
-        
-        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { [weak self] (verificationID, error) in
-            guard let self = self else { return }
-            if let error = error { print("Error during phone number verification: \(error.localizedDescription)"); return }
-            
-            UserDefaults.standard.set(verificationID, forKey: "authVerificationID")
-            
-        }
+        authorizePhoneNum()
+        authNumberTextField.text = ""
     }
     
     @objc func signupButtonTapped() {
@@ -169,21 +189,32 @@ extension AuthenticationView {
         
     }
     
-    
     @objc func cancelButtonTapped() {
-        
         self.deinitAuthView.onNext(())
-        
-        
     }
-    
-    
 }
 
 
 
 //MARK: - Message Authentication
 extension AuthenticationView {
+    
+    func authorizePhoneNum() {
+        
+        var phoneNumber = self.phoneNumberTextField.text ?? ""
+        if !phoneNumber.starts(with: "+82") && phoneNumber.count == 10 || phoneNumber.count == 11 {
+            if phoneNumber.starts(with: "0") {
+                phoneNumber.remove(at: phoneNumber.startIndex)
+            }
+            phoneNumber = "+82" + phoneNumber
+        }
+        
+        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { [weak self] (verificationID, error) in
+            guard let self = self else { return }
+            if let error = error { print("Error during phone number verification: \(error.localizedDescription)"); return }
+            UserDefaults.standard.set(verificationID, forKey: "authVerificationID")
+        }
+    }
     
     func authWithMessage() {
         guard let verificationCode = authNumberTextField.text else {
@@ -193,6 +224,7 @@ extension AuthenticationView {
         
         guard let verificationID = fetchVerificationIDFromUserDefaults() else {
             print("Error: VerificationID retrieval failed.")
+            AlertHandler.shared.presentErrorAlert(for: .authenticationError("인증번호가 잘못되었습니다"))
             return
         }
         
@@ -235,4 +267,6 @@ extension AuthenticationView {
         }
     }
 }
+
+
 

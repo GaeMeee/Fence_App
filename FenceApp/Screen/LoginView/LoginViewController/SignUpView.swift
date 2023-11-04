@@ -25,7 +25,6 @@ final class SignUpView: UIView {
         .withTarget(self, action: #selector(profileImageButtonTapped))
         .withCornerRadius(50)
         .withBottomBorder(width: 3)
-        .withBorder(color: UIColor(hexCode: "04364A"), width: 3.0)
 
 
     private lazy var emailTextField = UITextField()
@@ -42,23 +41,19 @@ final class SignUpView: UIView {
     private lazy var passwordTextField = UITextField()
         .withPlaceholder("Password")
         .withInsets(left: 5, right: 20)
+        .withSecured()
         
 
 
     private lazy var signupButton = UIButton()
         .withTitle("가입 완료!")
-        .withBorder(color: UIColor(hexCode: "04364A"), width: 3.0)
-        .withBlurEffect()
         .withCornerRadius(20)
-        .withTextColor(.black)
         .withTarget(self, action: #selector(signupButtonTapped))
     
     private lazy var cancelButton = UIButton()
         .withTitle("뒤로가기")
-        .withBorder(color: UIColor(hexCode: "04364A"), width: 3.0)
-        .withBlurEffect()
+        .withTextColor(ColorHandler.shared.textColor)
         .withCornerRadius(20)
-        .withTextColor(.black)
         .withTarget(self, action: #selector(cancelButtonTapped))
     
     
@@ -226,29 +221,3 @@ extension SignUpView {
         }
     }
 }
-
-
-//MARK: - SignUp
-//extension SignUpView {
-//
-//    func signupWithFirebase() {
-//        guard let email = emailTextField.text,
-//              let password = passwordTextField.text,
-//              let nickname = nicknameTextField.text,
-//              let imageUrlString = pickedImageURL?.absoluteString else { return }
-//        Task {
-//            do {
-//                let authResult = try await authService.signUpUser(email: email, password: password)
-//                let userResponseDTO = UserResponseDTO(email: email, profileImageURL: imageUrlString, identifier: authResult.user.uid, nickname: nickname)
-//                try await userService.createUser(userResponseDTO: userResponseDTO)
-//                print("Successfully \(#function)")
-//                self.signUpAuthSuccessful.onNext(())
-//            } catch {
-//                print("Error occurred: \(error)")
-//                AlertHandler.shared.presentErrorAlert(for: .networkError("네트워크 통신에 문제가 생겼습니다"))
-//
-//            }
-//        }
-//    }
-//}
-//

@@ -14,10 +14,11 @@ class ColorHandler {
     
     
     private init() {
-        titleColor = .black
-        textColor = .black
+        titleColor = UIColor(hexCode: "55BCEF")
+        textColor =  UIColor(hexCode: "55BCEF")
         buttonTextColor = .white
-        buttonActivatedColor = UIColor(hexCode: "51DACF")
-        buttonDeactivateColor = UIColor(hexCode: "A6A9B6")
+        buttonActivatedColor = UIColor(hexCode: "55BCEF")
+        buttonDeactivateColor = UIColor(hexCode: "A9A9A9")
     }
 }
+

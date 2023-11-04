@@ -130,7 +130,7 @@ extension UITextField {
         validationHandler!.isValidRelay
             .subscribe(onNext: { [weak self] isValid in
                 DispatchQueue.main.async {
-                    let borderColor = isValid ? UIColor(hexCode: "51DACF") : UIColor(hexCode: "6C5F5B")
+                    let borderColor = isValid ? UIColor(hexCode: "55BCEF") : UIColor(hexCode: "A9A9A9")
                     self?.withBottomBorder(color: borderColor, width: 3.0)
                 }
             })

@@ -14,7 +14,7 @@ class ResetPasswordView: UIView {
     private lazy var titleLabel = UILabel()
         .withText("비밀번호 변경")
         .withFont(30, fontName: "Binggrae-Bold")
-        .withTextColor(UIColor(hexCode: "6C5F5B"))
+        .withTextColor(ColorHandler.shared.titleColor)
     
     private lazy var emailTextField = UITextField()
         .withPlaceholder("Email")
@@ -22,28 +22,28 @@ class ResetPasswordView: UIView {
     
     private lazy var resetPasswordButton = UIButton()
         .withTitle("비밀번호 재설정하기")
-        .withTextColor(UIColor(hexCode: "6C5F5B"))
+        .withTextColor(.white)
         .withTarget(self, action: #selector(resetPasswordButtonTapped))
         .withCornerRadius(15)
-        .withBlurEffect()
     
     private lazy var cancelButton = UIButton()
         .withTitle("뒤로가기")
-        .withTextColor(UIColor(hexCode: "6C5F5B"))
+        .withTextColor(ColorHandler.shared.textColor)
         .withTarget(self, action: #selector(cancelButtonTapped))
-        .withCornerRadius(15)
-        .withBlurEffect()
     
     deinit {
         print("ResetPasswor Deinit")
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
         emailTextField
-            .updateBottomBorder(color: UIColor(hexCode: "04364A"), width: 3)
             .setupForValidation(type: .email)
+        setupValidate()
+
     }
+
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -136,27 +136,16 @@ extension ResetPasswordView {
 }
 
 
-//MARK: - isValid TextField Format
+//MARK: - setupValidate
 extension ResetPasswordView {
     func setupValidate() {
-    }
-}
-
-
-//MARK: - Handling keyboard
-extension ResetPasswordView {
-        
-    func adjustForKeyboard() {
-        RxKeyboard.instance.visibleHeight
-            .drive(onNext: { [weak self] keyboardHeight in
-                if keyboardHeight > 0 {
-                    self?.transform = CGAffineTransform(translationX: 0, y: -keyboardHeight / 2)
-                } else {
-                    self?.transform = .identity
+        emailTextField.validationHandler?.isValidRelay
+            .subscribe(onNext: { [weak self] isValid in
+                DispatchQueue.main.async {
+                    self?.resetPasswordButton.backgroundColor = isValid ? ColorHandler.shared.buttonActivatedColor : ColorHandler.shared.buttonDeactivateColor
+                    self?.resetPasswordButton.isEnabled = isValid
                 }
             })
             .disposed(by: disposeBag)
     }
 }
-
-
